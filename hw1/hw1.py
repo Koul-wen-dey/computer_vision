@@ -18,14 +18,18 @@ class GUI(QMainWindow, main_ui.Ui_MainWindow):
         self.pushButton_3.clicked.connect(self.open_dir)
 
         # Q1
-        self.pushButton_5.clicked.connect(lambda: Q1.find_corner(self.folder))
+
+        self.pushButton_5.clicked.connect(
+            lambda: Q1.find_corner(self.folder))
         self.pushButton_6.clicked.connect(
             lambda: Q1.find_intrinsic(self.folder))
-        '''
-        self.pushButton_7.clicked.connect()
-        self.pushButton_8.clicked.connect()
-        self.pushButton_9.clicked.connect()
 
+        self.pushButton_7.clicked.connect(lambda: Q1.find_extrinsic(
+            self.folder, int(self.comboBox.currentText())))
+
+        self.pushButton_8.clicked.connect(Q1.find_distortion)
+        self.pushButton_9.clicked.connect(lambda: Q1.show_result(self.folder))
+        '''
         # Q2
         self.pushButton_11.clicked.connect()
         self.pushButton_12.clicked.connect()

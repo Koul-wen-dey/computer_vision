@@ -1,14 +1,11 @@
 import cv2
 import numpy as np
 
-
-def p(a):
-    print(a)
+global dist, inmtx, rvecs, tvecs
 
 
-def find_corner(folder):
-    folder += '/Q1_Image/'
-
+def find_corner(folder: str):
+    folder += '/'
     for i in range(1, 16):
         img = cv2.imread(folder+str(i)+'.bmp',
                          cv2.IMREAD_COLOR)
@@ -21,8 +18,10 @@ def find_corner(folder):
 
 
 def find_intrinsic(folder: str):
-    folder += '/Q1_Image/'
-    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
+    global dist, inmtx, rvecs, tvecs
+    folder += '/'
+    criteria = (cv2.TERM_CRITERIA_EPS +
+                cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
     ob = np.zeros((11*8, 3), np.float32)
     ob[:, :2] = np.mgrid[0:11, 0:8].T.reshape(-1, 2)
     object_points = []
@@ -37,18 +36,37 @@ def find_intrinsic(folder: str):
             object_points.append(ob)
             image_points.append(corner)
 
-    ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(
+    ret, inmtx, dist, rvecs, tvecs = cv2.calibrateCamera(
         object_points, image_points, img.shape[::-1], None, None)
-    print(mtx)
+
+    print('Intrinsic:')
+    print(inmtx)
 
 
-def find_extrinsic(folder: str):
-    pass
+def find_extrinsic(folder: str, index: int):
+    global rvecs, tvecs
+    rmtx, _ = cv2.Rodrigues(rvecs[index-1])
+    exmtx = np.append(rmtx, tvecs[index-1], axis=1)
+    print('Extrinsic:')
+    print(exmtx)
 
 
-def find_distortion(folder: str):
-    pass
+def find_distortion():
+    global dist
+    print('Distortion:')
+    print(dist)
 
 
 def show_result(folder: str):
-    pass
+    global inmtx, dist
+    folder += '/'
+    for i in range(1, 16):
+        img = cv2.imread(folder+str(i)+'.bmp',
+                         cv2.IMREAD_COLOR)
+        uimg = cv2.undistort(img, inmtx, dist)
+        uimg = cv2.resize(uimg, (640, 720))
+        img = cv2.resize(img, (640, 720))
+        both = np.concatenate((img, uimg), axis=1)
+        cv2.imshow('1.5', both)
+        cv2.waitKey(1500)
+        cv2.destroyAllWindows()

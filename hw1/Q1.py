@@ -13,7 +13,7 @@ def find_corner(folder: str):
         tmp = cv2.findChessboardCorners(img, (11, 8))
         cv2.drawChessboardCorners(img, (11, 8), tmp[1], True)
         cv2.imshow('1.1', img)
-        cv2.waitKey(1500)
+        cv2.waitKey(1200)
         cv2.destroyAllWindows()
 
 

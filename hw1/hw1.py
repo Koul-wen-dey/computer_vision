@@ -4,6 +4,7 @@ import main_ui
 import os
 import sys
 import Q1
+import Q2
 
 
 class GUI(QMainWindow, main_ui.Ui_MainWindow):
@@ -29,14 +30,14 @@ class GUI(QMainWindow, main_ui.Ui_MainWindow):
 
         self.pushButton_8.clicked.connect(Q1.find_distortion)
         self.pushButton_9.clicked.connect(lambda: Q1.show_result(self.folder))
-        '''
+        
         # Q2
-        self.pushButton_11.clicked.connect()
-        self.pushButton_12.clicked.connect()
+        self.pushButton_11.clicked.connect(lambda: Q2.on_board(self.folder,self.textEdit.toPlainText()))
+        # self.pushButton_12.clicked.connect()
 
         # Q3
-        self.pushButton_4.clicked.connect()
-        '''
+        # self.pushButton_4.clicked.connect()
+
 
     def open_dir(self):
         self.folder = QFileDialog.getExistingDirectory(

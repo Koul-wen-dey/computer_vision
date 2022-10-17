@@ -5,6 +5,7 @@ import os
 import sys
 import Q1
 import Q2
+import Q3
 
 
 class GUI(QMainWindow, main_ui.Ui_MainWindow):
@@ -15,8 +16,8 @@ class GUI(QMainWindow, main_ui.Ui_MainWindow):
         # self.subL = sub_window()
         # self.subR = sub_window()
         self.pushButton.clicked.connect(self.open_dir)
-        self.pushButton_2.clicked.connect(self.open_dir)
-        self.pushButton_3.clicked.connect(self.open_dir)
+        self.pushButton_2.clicked.connect(self.open_imgL)
+        self.pushButton_3.clicked.connect(self.open_imgR)
 
         # Q1
 
@@ -36,13 +37,18 @@ class GUI(QMainWindow, main_ui.Ui_MainWindow):
         self.pushButton_12.clicked.connect(lambda: Q2.vertical(self.folder,self.textEdit.toPlainText()))
 
         # Q3
-        # self.pushButton_4.clicked.connect()
+        self.pushButton_4.clicked.connect(lambda: Q3.stereo_disparity_map(self.imageL,self.imageR))
 
 
     def open_dir(self):
         self.folder = QFileDialog.getExistingDirectory(
             self, '開啟資料夾', os.getcwd())
+    
+    def open_imgL(self):
+        self.imageL, _ = QFileDialog.getOpenFileName(self,'開啟檔案',os.getcwd())
 
+    def open_imgR(self):
+        self.imageR, _ = QFileDialog.getOpenFileName(self,'開啟檔案',os.getcwd())
 
 class sub_window(QWidget):
     def __init__(self):

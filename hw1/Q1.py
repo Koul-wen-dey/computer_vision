@@ -15,7 +15,7 @@ def find_corner(folder: str):
         cv2.namedWindow('1.1',cv2.WINDOW_NORMAL)
         cv2.resizeWindow('1.1',1280,960)
         cv2.imshow('1.1', img)
-        cv2.waitKey(1200)
+        cv2.waitKey(1000)
     cv2.destroyAllWindows()
 
 
@@ -72,5 +72,5 @@ def show_result(folder: str):
         cv2.namedWindow('1.5',cv2.WINDOW_NORMAL)
         cv2.resizeWindow('1.5',1280,960)
         cv2.imshow('1.5', both)
-        cv2.waitKey(1200)
+        cv2.waitKey(1000)
     cv2.destroyAllWindows()

@@ -9,12 +9,14 @@ def find_corner(folder: str):
     for i in range(1, 16):
         img = cv2.imread(folder+str(i)+'.bmp',
                          cv2.IMREAD_COLOR)
-        img = cv2.resize(img, (1280, 960))
+        # img = cv2.resize(img, (1280, 960))
         tmp = cv2.findChessboardCorners(img, (11, 8))
         cv2.drawChessboardCorners(img, (11, 8), tmp[1], True)
+        cv2.namedWindow('1.1',cv2.WINDOW_NORMAL)
+        cv2.resizeWindow('1.1',1280,960)
         cv2.imshow('1.1', img)
         cv2.waitKey(1200)
-        cv2.destroyAllWindows()
+    cv2.destroyAllWindows()
 
 
 def find_intrinsic(folder: str):
@@ -64,9 +66,11 @@ def show_result(folder: str):
         img = cv2.imread(folder+str(i)+'.bmp',
                          cv2.IMREAD_COLOR)
         uimg = cv2.undistort(img, inmtx, dist)
-        uimg = cv2.resize(uimg, (640, 720))
-        img = cv2.resize(img, (640, 720))
+        uimg = cv2.resize(uimg, (640, 960))
+        img = cv2.resize(img, (640, 960))
         both = np.concatenate((img, uimg), axis=1)
+        cv2.namedWindow('1.5',cv2.WINDOW_NORMAL)
+        cv2.resizeWindow('1.5',1280,960)
         cv2.imshow('1.5', both)
-        cv2.waitKey(1500)
-        cv2.destroyAllWindows()
+        cv2.waitKey(1200)
+    cv2.destroyAllWindows()

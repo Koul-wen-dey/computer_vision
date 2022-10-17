@@ -33,7 +33,7 @@ class GUI(QMainWindow, main_ui.Ui_MainWindow):
         
         # Q2
         self.pushButton_11.clicked.connect(lambda: Q2.on_board(self.folder,self.textEdit.toPlainText()))
-        # self.pushButton_12.clicked.connect()
+        self.pushButton_12.clicked.connect(lambda: Q2.vertical(self.folder,self.textEdit.toPlainText()))
 
         # Q3
         # self.pushButton_4.clicked.connect()

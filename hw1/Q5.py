@@ -1,4 +1,3 @@
-from cProfile import label
 from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog
 from PyQt5.QtGui import QImage,QPixmap
 from PyQt5 import QtWidgets
@@ -19,6 +18,7 @@ import numpy as np
 import random
 import os
 import cv2
+from PIL import Image
 
 PATH = 'vgg19_weight.pt'
 batch = 100
@@ -26,7 +26,8 @@ epoch = 40
 learning_rate = 0.01
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(device)
-
+mean = [x/255 for x in [125.3, 23.0, 113.9]]
+std = [x/255 for x in [63.0, 62.1, 66.7]]
 vgg19 = models.vgg19_bn().to(device)
 check = torch.load(PATH)
 vgg19.avgpool = nn.AdaptiveAvgPool2d(output_size=(1,1)).to(device)
@@ -36,12 +37,7 @@ vgg19.load_state_dict(check['model_state_dict'])
 optimizer = torch.optim.SGD(vgg19.parameters(), lr=learning_rate, momentum=0.9, nesterov=True)
 optimizer.load_state_dict(check['optimizer_state_dict'])
 scheduler = lr_scheduler.MultiStepLR(optimizer, milestones=[40], gamma=0.1)
-'''
-learn_history = []
-mean = [x/255 for x in [125.3, 23.0, 113.9]]
-std = [x/255 for x in [63.0, 62.1, 66.7]]
-loss_func = torch.nn.CrossEntropyLoss()
-'''
+
 train_set = datasets.CIFAR10(root='./data',
                               train=True,
                               download=False,
@@ -94,7 +90,32 @@ class GUI(QMainWindow,q5_ui.Ui_MainWindow):
         self.pushButton_3.clicked.connect(self.show_model)
         self.pushButton_4.clicked.connect(self.data_augmentation)
         self.pushButton_5.clicked.connect(self.show_accuracy)
-        # self.pushButton_6.clicked.connect()
+        self.pushButton_6.clicked.connect(self.show_inference)
+
+    def show_inference(self):
+        global vgg19
+        vgg19.eval()
+        with torch.no_grad():
+            img = Image.open(self.image).convert('RGB')
+            tfms = trans.Compose([
+                trans.ToTensor(),
+                trans.Normalize(mean, std)
+                ])
+            img_tensor = tfms(img).float()
+            img_tensor = img_tensor.unsqueeze(0)
+            img_tensor = img_tensor.to(device)
+            output = vgg19(img_tensor)
+            probs = torch.nn.functional.softmax(output,dim=1)
+            conf, pred = torch.max(probs,1)
+            plt.imshow(img)
+            print('Confidence:'+str(conf.item()))
+            print('Predict Label:'+classes[pred.item()])
+            # plt.text(-5, 60, 'Confidence:'+str(conf.item()), fontsize = 15)
+            # plt.text(-5, 80, 'Predict Label:'+classes[pred.item()], fontsize = 15)
+            plt.show()
+
+            # print(conf,classes[pred.item()])
+        pass
 
     def show_accuracy(self):
         tmp=[]
@@ -114,12 +135,10 @@ class GUI(QMainWindow,q5_ui.Ui_MainWindow):
         axs[0].set_title('Accuracy')
         axs[0].plot(epo,train_acc,label='Training')
         axs[0].plot(epo,test_acc,label='Testing')
+        axs[0].legend()
         axs[1].set_title('Loss')
         axs[1].plot(epo,train_loss,label='Training')
-
-        # plt.plot(epo,train_loss,label='Training')
-        # plt.plot(epo,test_loss,label='Testing')
-        plt.legend()
+        axs[1].legend()
         plt.show()
         pass
 
@@ -147,6 +166,7 @@ class GUI(QMainWindow,q5_ui.Ui_MainWindow):
         pass
 
     def training_classifier(self):
+        
         pass
 
     def show_model(self):
@@ -169,12 +189,6 @@ class GUI(QMainWindow,q5_ui.Ui_MainWindow):
         img = cv2.imread(self.image)
         img = cv2.resize(img,(256,256),interpolation=cv2.INTER_AREA)
         cv2.imshow('',img)
-        # frame = QImage(img,img.shape[0],img.shape[1],QImage.Format_RGB888)
-        # pix = QPixmap.fromImage(frame)
-        # graphicscene = QtWidgets.QGraphicsScene() 
-        # graphicscene.addWidget(pix) 
-        # self.graphicsView.setScene(graphicscene)
-        # self.graphicsView.show()
         pass
 
 if __name__ == '__main__':

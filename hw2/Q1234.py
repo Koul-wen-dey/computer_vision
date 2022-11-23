@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog
 import hw2_ui
 import sys
 import os
-import q1, q2
+import q1, q2, q3
 
 class GUI(QMainWindow,hw2_ui.Ui_MainWindow):
     def __init__(self):
@@ -13,8 +13,8 @@ class GUI(QMainWindow,hw2_ui.Ui_MainWindow):
         self.pushButton_3.clicked.connect(self.load_folder) #folder
         self.pushButton_4.clicked.connect(lambda: q1.background_subtract(self.video)) #background
         self.pushButton_5.clicked.connect(lambda: q2.preprocessing(self.video)) #preprcessing
-        # self.pushButton_6.clicked.connect() #tracking
-        # self.pushButton_7.clicked.connect() #perspective
+        self.pushButton_6.clicked.connect(lambda: q2.tracking(self.video)) #tracking
+        self.pushButton_7.clicked.connect(lambda: q3.perspective(self.video,self.image)) #perspective
         # self.pushButton_8.clicked.connect() #reconstruction
         # self.pushButton_9.clicked.connect() #compute
 

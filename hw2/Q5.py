@@ -28,63 +28,6 @@ resnet.fc = torch.nn.Sequential(
     torch.nn.Linear(2048,1),
     torch.nn.Sigmoid()
 ).to(device)
-# PATH = 'vgg19_weight.pt'
-# batch = 100
-# epoch = 40
-# learning_rate = 0.01
-# print(device)
-# mean = [x/255 for x in [125.3, 23.0, 113.9]]
-# std = [x/255 for x in [63.0, 62.1, 66.7]]
-# vgg19 = models.vgg19_bn().to(device)
-# check = torch.load(PATH)
-# vgg19.avgpool = nn.AdaptiveAvgPool2d(output_size=(1,1)).to(device)
-# vgg19.classifier[0] = nn.Linear(512,4096).to(device)
-# vgg19.classifier[6] = nn.Linear(4096,10).to(device)
-# vgg19.load_state_dict(check['model_state_dict'])
-# optimizer = torch.optim.SGD(vgg19.parameters(), lr=learning_rate, momentum=0.9, nesterov=True)
-# optimizer.load_state_dict(check['optimizer_state_dict'])
-# scheduler = lr_scheduler.MultiStepLR(optimizer, milestones=[40], gamma=0.1)
-
-# train_set = datasets.CIFAR10(root='./data',
-#                               train=True,
-#                               download=False,
-#                               transform=trans.Compose([
-#                                 #  trans.RandomHorizontalFlip(),
-#                                 #  trans.RandomRotation(30),
-#                                 #  trans.RandomCrop(32, padding=4),
-#                                  trans.ToTensor(),
-#                                 #  trans.Normalize((0.5,0.5,0.5), (0.5,0.5,0.5))
-#                              ]))
-# train_loader = DataLoader(train_set,
-#                     batch_size=batch,
-#                     shuffle=True,
-#                     num_workers=0)
-
-# test_set = datasets.CIFAR10(root='./data',
-#                              train=False,
-#                              download=False,
-#                              transform=trans.Compose([
-#                                 trans.ToTensor(),
-#                                 trans.Normalize((0.5,0.5,0.5), (0.5,0.5,0.5))
-#                             ]))
-# test_loader = DataLoader(test_set,
-#                     batch_size=batch,
-#                     num_workers=0) 
-
-
-# def imshow(img,label,index):
-#     # torchvision.utils.make_grid
-#     fig = plt.figure(figsize=(3,3))
-#     for i in range(1,10):
-#         npimg = torchvision.utils.make_grid(img[index[i-1]]).numpy()
-#         ax = fig.add_subplot(3,3,i)
-#         ax.imshow(np.transpose(npimg, (1, 2, 0)))
-#         ax.set_title(classes[label[index[i-1]]])
-#         ax.set_xticks([])
-#         ax.set_yticks([])
-#     plt.show()
-#     tmp = torchvision.utils.make_grid(img[0]).numpy()
-#     plt.imsave('test_img.png',np.transpose(tmp, (1, 2, 0)))
 
 
 class GUI(QMainWindow,q5_ui.Ui_MainWindow):

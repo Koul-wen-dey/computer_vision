@@ -13,18 +13,12 @@ def background_subtract(video:str):
         if count == 24:
             break
         count += 1
-    cap.release()
 
     frames = np.asarray(frames,dtype=np.uint8)
-    dev = np.zeros((frames.shape[1],frames.shape[2]))
-    mean = np.zeros((frames.shape[1],frames.shape[2]))
-    for y in range(frames.shape[1]):
-        for x in range(frames.shape[2]):
-            dev[y,x] = np.std(frames[:,y,x])
-            mean[y,x] = np.mean(frames[:,y,x])
+    mean = np.mean(frames[:25,:,:],axis=0)
+    dev = np.std(frames[:25,:,:],axis=0)
     dev[np.where(dev<5)] = 5
 
-    cap = cv2.VideoCapture(video)
     while cap.isOpened():
         ret, frame = cap.read()
         if not ret:
@@ -32,11 +26,11 @@ def background_subtract(video:str):
         frame2 = frame.copy()
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         tmp =np.zeros(gray.shape,dtype=np.uint8)
-        tmp = np.where(gray-mean>dev*5,255,0).astype(np.uint8)
+        tmp = np.where(np.abs(gray-mean)>dev*5,255,0).astype(np.uint8)
         frame[np.where(tmp==0)] = 0
         tmp = cv2.cvtColor(tmp,cv2.COLOR_GRAY2BGR)
         all = cv2.hconcat([frame2,tmp,frame])
-        cv2.imshow('a',all)
-        cv2.waitKey(5)
+        cv2.imshow('Q1',all)
+        cv2.waitKey(20)
     cv2.destroyAllWindows()
     cap.release()
